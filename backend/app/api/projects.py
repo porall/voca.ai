@@ -144,5 +144,13 @@ async def delete_project(
     current_user: UserResponse = Depends(get_current_user),
 ):
     """Delete a project."""
-    # TODO: Delete from DB
-    return {"status": "deleted"}
+    if project_id not in PROJECTS_DB:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Verify ownership
+    project = PROJECTS_DB[project_id]
+    if project["user_id"] != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this project")
+    
+    del PROJECTS_DB[project_id]
+    return {"status": "deleted", "project_id": project_id}
