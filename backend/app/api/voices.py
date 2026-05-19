@@ -54,6 +54,31 @@ async def create_voice(
     )
 
 
+class VoiceUpdate(BaseModel):
+    """Voice update request."""
+    name: str | None = None
+    is_default: bool | None = None
+
+
+@router.put("/{voice_id}", response_model=VoiceResponse)
+async def update_voice(
+    voice_id: str,
+    voice_update: VoiceUpdate,
+    current_user: UserResponse = Depends(get_current_user),
+):
+    """Update a voice clone."""
+    # TODO: Update in DB
+    return VoiceResponse(
+        id=voice_id,
+        name=voice_update.name or "Updated Voice",
+        audio_url="https://example.com/voice.mp3",
+        duration_secs=10.0,
+        is_default=voice_update.is_default or False,
+        status="ready",
+        created_at=datetime.utcnow(),
+    )
+
+
 @router.delete("/{voice_id}")
 async def delete_voice(
     voice_id: str,
