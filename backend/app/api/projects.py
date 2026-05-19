@@ -41,12 +41,26 @@ class GenerateRequest(BaseModel):
     duration: Optional[int] = 180  # seconds
 
 
+class ProjectUpdate(BaseModel):
+    """Project update request."""
+    name: Optional[str] = None
+    lyrics: Optional[str] = None
+    music_genre: Optional[str] = None
+    style: Optional[str] = None
+    voice_id: Optional[str] = None
+
+
+# In-memory storage for mock data
+PROJECTS_DB = {}
+
+
 # Routes
 @router.get("", response_model=List[ProjectResponse])
 async def get_projects(current_user: UserResponse = Depends(get_current_user)):
     """Get user's projects."""
-    # TODO: Get from DB
-    return []
+    # Return from mock DB
+    user_projects = [p for p in PROJECTS_DB.values() if p["user_id"] == current_user.id]
+    return user_projects
 
 
 @router.post("", response_model=ProjectResponse)
@@ -55,9 +69,9 @@ async def create_project(
     current_user: UserResponse = Depends(get_current_user),
 ):
     """Create a new project."""
-    # TODO: Save to DB
-    return ProjectResponse(
-        id="mock-project-id",
+    project_id = f"proj-{len(PROJECTS_DB) + 1}"
+    new_project = ProjectResponse(
+        id=project_id,
         name=project.name,
         lyrics=project.lyrics,
         music_genre=project.music_genre,
@@ -69,6 +83,8 @@ async def create_project(
         status="draft",
         created_at=datetime.utcnow(),
     )
+    PROJECTS_DB[project_id] = {**new_project.model_dump(), "user_id": current_user.id}
+    return new_project
 
 
 @router.get("/{project_id}", response_model=ProjectResponse)
@@ -77,20 +93,34 @@ async def get_project(
     current_user: UserResponse = Depends(get_current_user),
 ):
     """Get project details."""
-    # TODO: Get from DB
-    return ProjectResponse(
-        id=project_id,
-        name="Mock Project",
-        lyrics=None,
-        music_genre=None,
-        style=None,
-        voice_id=None,
-        music_url=None,
-        vocal_url=None,
-        final_url=None,
-        status="draft",
-        created_at=datetime.utcnow(),
-    )
+    if project_id not in PROJECTS_DB:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return PROJECTS_DB[project_id]
+
+
+@router.put("/{project_id}", response_model=ProjectResponse)
+async def update_project(
+    project_id: str,
+    project: ProjectUpdate,
+    current_user: UserResponse = Depends(get_current_user),
+):
+    """Update a project."""
+    if project_id not in PROJECTS_DB:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    existing = PROJECTS_DB[project_id]
+    if project.name is not None:
+        existing["name"] = project.name
+    if project.lyrics is not None:
+        existing["lyrics"] = project.lyrics
+    if project.music_genre is not None:
+        existing["music_genre"] = project.music_genre
+    if project.style is not None:
+        existing["style"] = project.style
+    if project.voice_id is not None:
+        existing["voice_id"] = project.voice_id
+    
+    return existing
 
 
 @router.post("/{project_id}/generate")
