@@ -62,3 +62,21 @@ async def delete_voice(
     """Delete a voice clone."""
     # TODO: Delete from DB and S3
     return {"status": "deleted"}
+
+
+@router.get("/{voice_id}", response_model=VoiceResponse)
+async def get_voice(
+    voice_id: str,
+    current_user: UserResponse = Depends(get_current_user),
+):
+    """Get a voice clone by ID."""
+    # TODO: Get from DB
+    return VoiceResponse(
+        id=voice_id,
+        name="Mock Voice",
+        audio_url="https://example.com/voice.mp3",
+        duration_secs=10.0,
+        is_default=False,
+        status="ready",
+        created_at=datetime.utcnow(),
+    )
