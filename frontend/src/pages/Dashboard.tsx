@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { getMe, getToken, removeToken, type User } from '../api/auth'
 import { listVoices, type Voice } from '../api/voices'
 import { useNavigate, Link } from 'react-router-dom'
+import Header from '../components/Header'
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
@@ -32,36 +33,20 @@ export default function Dashboard() {
       .finally(() => setLoading(false))
   }, [navigate])
 
-  const handleLogout = () => {
-    removeToken()
-    navigate('/login')
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-900 to-indigo-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+        <div className="text-white text-xl">加载中...</div>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 to-indigo-900">
-      {/* Header */}
-      <header className="flex items-center justify-between px-8 py-4">
-        <h1 className="text-2xl font-bold text-white">🎤 Voca.ai</h1>
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 text-white hover:text-purple-200"
-        >
-          Logout
-        </button>
-      </header>
-
-      {/* Main content */}
+      <Header showLogout />
       <main className="px-8 py-8">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-white mb-2">Welcome, {user?.nickname || user?.email}!</h2>
+          <h2 className="text-3xl font-bold text-white mb-2">欢迎，{user?.nickname || user?.email}！</h2>
           <p className="text-purple-200 mb-8">Start creating your AI music</p>
 
           {/* Quick actions */}

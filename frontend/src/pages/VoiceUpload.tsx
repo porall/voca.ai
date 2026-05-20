@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { uploadVoice } from '../api/voices'
+import Header from '../components/Header'
 import './VoiceUpload.css'
 
 export default function VoiceUpload() {
@@ -44,6 +45,7 @@ export default function VoiceUpload() {
 
   return (
     <div className="voice-upload-page">
+      <Header />
       <div className="voice-upload-card">
         <h1>Clone Your Voice</h1>
         <p className="subtitle">
@@ -89,7 +91,7 @@ export default function VoiceUpload() {
 
         <div className="nav-links">
           <button onClick={() => navigate('/dashboard')}>
-            ← Back to Dashboard
+            ← 返回用户中心
           </button>
         </div>
       </div>
