@@ -91,7 +91,7 @@ export default function Register() {
         <p className="text-center text-purple-200 mt-6">
           已有账号？{' '}
           <a href="/login" className="text-purple-300 hover:text-white underline">
-            立��登录
+            立即登录
           </a>
         </p>
       </div>
