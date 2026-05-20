@@ -1,90 +1,21 @@
-import { useState } from 'react'
-import './index.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Landing from './Landing'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Dashboard from './pages/Dashboard'
+import VoiceUpload from './pages/VoiceUpload'
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
+export default function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 to-indigo-900">
-      {/* Header */}
-      <header className="flex items-center justify-between px-8 py-4">
-        <h1 className="text-2xl font-bold text-white">🎤 Voca.ai</h1>
-        <nav className="flex gap-4">
-          {isLoggedIn ? (
-            <button 
-              onClick={() => setIsLoggedIn(false)}
-              className="px-4 py-2 text-white hover:text-purple-200"
-            >
-              Dashboard
-            </button>
-          ) : (
-            <>
-              <button className="px-4 py-2 text-white hover:text-purple-200">
-                Login
-              </button>
-              <button 
-                onClick={() => setIsLoggedIn(true)}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-              >
-                Get Started
-              </button>
-            </>
-          )}
-        </nav>
-      </header>
-
-      {/* Hero */}
-      <main className="flex flex-col items-center justify-center px-4 py-20 text-center">
-        <h2 className="text-5xl font-bold text-white mb-6">
-          Your Voice, Your Song
-        </h2>
-        <p className="text-xl text-purple-200 mb-8 max-w-2xl">
-          Create AI-powered music with your own cloned voice. 
-          Generate original songs and hear them sung in your unique voice.
-        </p>
-        <button 
-          onClick={() => setIsLoggedIn(true)}
-          className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white 
-                     text-lg font-semibold rounded-full hover:scale-105 transition-transform"
-        >
-          Start Creating Free
-        </button>
-        
-        {!isLoggedIn && (
-          <p className="mt-4 text-purple-300 text-sm">
-            No credit card required • 3 free songs/day
-          </p>
-        )}
-      </main>
-
-      {/* Features */}
-      <section className="px-8 py-16 bg-white/5">
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <div className="p-6 bg-white/10 rounded-xl">
-            <div className="text-3xl mb-4">🎙️</div>
-            <h3 className="text-xl font-semibold text-white mb-2">Voice Cloning</h3>
-            <p className="text-purple-200">
-              Upload a 30-second audio sample. We'll clone your unique voice.
-            </p>
-          </div>
-          <div className="p-6 bg-white/10 rounded-xl">
-            <div className="text-3xl mb-4">🎵</div>
-            <h3 className="text-xl font-semibold text-white mb-2">AI Composition</h3>
-            <p className="text-purple-200">
-              Describe your song and AI generates melody and arrangement.
-            </p>
-          </div>
-          <div className="p-6 bg-white/10 rounded-xl">
-            <div className="text-3xl mb-4">🎶</div>
-            <h3 className="text-xl font-semibold text-white mb-2">Your Performance</h3>
-            <p className="text-purple-200">
-              Hear your cloned voice sing your AI-created song.
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/voice-upload" element={<VoiceUpload />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
-
-export default App
