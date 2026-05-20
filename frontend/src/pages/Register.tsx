@@ -1,7 +1,7 @@
 // Register page
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { register, login, setToken } from '../api/auth'
+import { register, login, setToken, setStoredUser, getMe } from '../api/auth'
 import Header from '../components/Header'
 
 export default function Register() {
@@ -21,6 +21,11 @@ export default function Register() {
       await register(email, password, nickname || undefined)
       const result = await login(email, password)
       setToken(result.access_token)
+      
+      // Get user info and store
+      const user = await getMe(result.access_token)
+      setStoredUser(user)
+      
       navigate('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : '注册失败')

@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
-from sqlalchemy import Column, String, Float, Boolean, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, Float, Boolean, DateTime, ForeignKey, Text, Integer
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from sqlalchemy import create_engine
 from sqlalchemy.pool import StaticPool
@@ -72,20 +72,40 @@ class Voice(Base):
 
 
 class Project(Base):
-    """Project model."""
+    """Project/Song model."""
     __tablename__ = "projects"
     
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String(36), ForeignKey("users.id"), nullable=False, index=True)
-    name = Column(String(200), nullable=False)
-    lyrics = Column(Text)
-    music_genre = Column(String(50))
-    style = Column(String(100))
-    voice_id = Column(String(36), ForeignKey("voices.id"))
-    music_url = Column(Text)  # Suno generated
-    vocal_url = Column(Text)  # Reecho synthesized
-    final_url = Column(Text)  # Merged final
-    status = Column(String(20), default="draft")  # draft, processing, completed, failed
+    name = Column(String(200), nullable=False)  # 项目名/歌曲名
+    
+    # Song creation params
+    gpt_description = Column(Text)  # AI描述 prompt
+    lyrics = Column(Text)  # 自定义歌词
+    music_genre = Column(String(50))  # 风格标签
+    style = Column(String(100))  # 歌手风格预设
+    
+    # Voice
+    voice_id = Column(String(36), ForeignKey("voices.id"))  # 克隆声音ID
+    
+    # Generation
+    task_id = Column(String(50))  # Suno任务ID
+    suno_title = Column(String(200))  # Suno返回的歌曲名
+    suno_id = Column(String(36))  # Suno歌曲ID(custom_id)
+    mv = Column(String(20), default="chirp-fenix")  # 模型版本
+    duration = Column(Integer)  # 时长(秒)
+    
+    # URLs
+    music_url = Column(Text)  # Suno生成的AI歌曲
+    cover_url = Column(Text)  # 封面图
+    vocal_url = Column(Text)  # Reecho合成的人声
+    final_url = Column(Text)  # 合并后的成品
+    
+    # Status
+    status = Column(String(20), default="draft")  # draft-草稿, pending-等待生成, processing-生成中, completed-完成, failed-失败
+    error_message = Column(Text)  # 错误信息
+    points_cost = Column(Integer, default=0)  # 消耗积分
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

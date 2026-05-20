@@ -38,8 +38,9 @@ class Settings(BaseSettings):
     s3_access_key: str = ""
     s3_secret_key: str = ""
 
-    # AI APIs
-    suno_api_url: str = "https://api.suno.ai"
+    # AI APIs (open.suno.cn REST API)
+    suno_api_url: str = "https://open.suno.cn/api/v1"
+    suno_api_key: str = ""
     reecho_api_url: str = "https://api.reecho.ai"
     reecho_api_key: str = ""
 

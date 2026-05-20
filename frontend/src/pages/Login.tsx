@@ -1,7 +1,7 @@
 // Login page
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { login, setToken } from '../api/auth'
+import { login, setToken, setStoredUser, getMe } from '../api/auth'
 import Header from '../components/Header'
 
 export default function Login() {
@@ -19,6 +19,11 @@ export default function Login() {
     try {
       const result = await login(email, password)
       setToken(result.access_token)
+      
+      // Get user info and store
+      const user = await getMe(result.access_token)
+      setStoredUser(user)
+      
       navigate('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : '登录失败')

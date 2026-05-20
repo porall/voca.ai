@@ -64,4 +64,14 @@ export function setToken(token: string): void {
 
 export function removeToken(): void {
   localStorage.removeItem('token');
+  localStorage.removeItem('user');
+}
+
+export function getStoredUser(): User | null {
+  const userStr = localStorage.getItem('user');
+  return userStr ? JSON.parse(userStr) : null;
+}
+
+export function setStoredUser(user: User): void {
+  localStorage.setItem('user', JSON.stringify(user));
 }

@@ -70,9 +70,9 @@ export default function Dashboard() {
               <p className="text-purple-200 mb-4">
                 描述你的歌曲，AI 自动生成配乐。
               </p>
-              <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+              <Link to="/song-create" className="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                 开始创作
-              </button>
+              </Link>
             </div>
           </div>
 

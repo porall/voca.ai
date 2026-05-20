@@ -1,0 +1,17 @@
+/* SongCreate.css */
+
+.song-create-container {
+  padding-bottom: 2rem;
+}
+
+.song-create-container h1 {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.song-create-container p {
+  color: #c9b8fa;
+  margin-bottom: 2rem;
+}
