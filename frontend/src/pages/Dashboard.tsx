@@ -1,10 +1,12 @@
 // Dashboard page - user management area
 import { useState, useEffect } from 'react'
 import { getMe, getToken, removeToken, type User } from '../api/auth'
-import { useNavigate } from 'react-router-dom'
+import { listVoices, type Voice } from '../api/voices'
+import { useNavigate, Link } from 'react-router-dom'
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
+  const [voices, setVoices] = useState<Voice[]>([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
@@ -15,8 +17,14 @@ export default function Dashboard() {
       return
     }
 
-    getMe(token)
-      .then(setUser)
+    Promise.all([
+      getMe(token),
+      listVoices()
+    ])
+      .then(([userData, voicesData]) => {
+        setUser(userData)
+        setVoices(voicesData)
+      })
       .catch(() => {
         removeToken()
         navigate('/login')
@@ -61,27 +69,44 @@ export default function Dashboard() {
             {/* Voice Cloning */}
             <div className="bg-white/10 p-6 rounded-xl">
               <div className="text-3xl mb-4">🎙️</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Clone Your Voice</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">克隆你的声音</h3>
               <p className="text-purple-200 mb-4">
-                Upload a 30-second audio sample to create your voice clone.
+                上传 30 秒音频样本，创建你的声音克隆。
               </p>
-              <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                Upload Audio
-              </button>
+              <Link to="/voice-upload" className="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                上传音频
+              </Link>
             </div>
 
             {/* Create Song */}
             <div className="bg-white/10 p-6 rounded-xl">
               <div className="text-3xl mb-4">🎵</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Create New Song</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">创建新歌曲</h3>
               <p className="text-purple-200 mb-4">
-                Describe your song and let AI generate the music.
+                描述你的歌曲，AI 自动生成配乐。
               </p>
               <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                Start Creating
+                开始创作
               </button>
             </div>
           </div>
+
+          {/* Voice List */}
+          {voices.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold text-white mb-4">已克隆的声音</h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                {voices.map(voice => (
+                  <div key={voice.id} className="bg-white/5 p-4 rounded-lg">
+                    <p className="text-white font-medium">{voice.name}</p>
+                    <p className="text-purple-300 text-sm">
+                      状态: {voice.status === 'ready' ? '✅ 就绪' : '⏳ 处理中'}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Premium badge */}
           {user?.is_premium && (
