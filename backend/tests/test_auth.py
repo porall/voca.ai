@@ -26,6 +26,9 @@ async def test_login_returns_token():
 @pytest.mark.asyncio
 async def test_register_creates_user():
     """Registration should create new user."""
+    import random
+    random_email = f"newuser{random.randint(1000,9999)}@example.com"
+    
     async with AsyncClient(
         transport=ASGITransport(app=app),
         base_url="http://test"
@@ -33,13 +36,13 @@ async def test_register_creates_user():
         response = await client.post(
             "/api/auth/register",
             json={
-                "email": "newuser@example.com",
+                "email": random_email,
                 "password": "password123",
                 "nickname": "New User"
             }
         )
     
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
     assert data["email"] == "newuser@example.com"
     assert "id" in data

@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     app_name: str = "Voca.ai"
     debug: bool = False
 
-    # Database
-    database_url: str = "postgresql://user:password@localhost:5432/vocadb"
+# Database
+    database_url: str = "sqlite:///./vocadb.sqlite"
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"
