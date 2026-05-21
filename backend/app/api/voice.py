@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.models.db import get_db, User, Voice
 from app.api.auth import get_current_user, UserResponse
-from app.services.reecho import reecho_service
+from app.services.cosyvoice import cosyvoice_service
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
@@ -96,10 +96,10 @@ async def upload_voice(
     # Create local URL for the file
     audio_url = f"/voices/{filename}"
     
-    # Call Reecho API to clone voice (in background)
+    # Call CosyVoice API to clone voice (in background)
     # For now, mark as ready (mock)
     try:
-        result = await reecho_service.clone_voice(
+        result = await cosyvoice_service.clone_voice(
             audio_url=f"file://{file_path}",
             name=name,
         )

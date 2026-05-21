@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30 * 24 * 60  # 30 days
 
     # CORS
-    cors_origins: List[str] = Field(default_factory=lambda: ["http://localhost:5173"])
+    cors_origins: List[str] = Field(default_factory=lambda: ["http://localhost:5173", "https://ritzy-stack-tartly.ngrok-free.dev", "*"])
 
     # S3/OSS
     s3_bucket: str = "voca-ai-files"
@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     suno_api_key: str = ""
     reecho_api_url: str = "https://api.reecho.ai"
     reecho_api_key: str = ""
+    
+    # Alibaba Cloud DASHSCOPE (CosyVoice)
+    dashscope_api_key: str = ""
 
 
 settings = Settings()

@@ -7,6 +7,7 @@ import VoiceUpload from './pages/VoiceUpload'
 import MusicPlayer from './pages/MusicPlayer'
 import SongCreate from './pages/SongCreate'
 import TaskStatus from './pages/TaskStatus'
+import Projects from './pages/Projects'
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/music-player" element={<MusicPlayer />} />
         <Route path="/song-create" element={<SongCreate />} />
         <Route path="/task/:id" element={<TaskStatus />} />
+        <Route path="/projects" element={<Projects />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
