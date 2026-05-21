@@ -49,3 +49,20 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# Initialize CosyVoice service with API key
+def init_cosyvoice():
+    """Initialize CosyVoice service after settings load."""
+    if settings.dashscope_api_key:
+        try:
+            import dashscope
+            dashscope.api_key = settings.dashscope_api_key
+            from app.services.cosyvoice import cosyvoice_service
+            cosyvoice_service.api_key = settings.dashscope_api_key
+        except ImportError:
+            # dashscope not installed, CosyVoice will use mock
+            pass
+
+
+# Call init on module load
+init_cosyvoice()
