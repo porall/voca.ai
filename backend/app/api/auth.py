@@ -44,6 +44,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     nickname: Optional[str]
     is_premium: bool = False
+    points: int = 300
     created_at: datetime
 
 
@@ -87,6 +88,7 @@ async def get_current_user(
         email=user.email,
         nickname=user.nickname,
         is_premium=user.is_premium,
+        points=user.points,
         created_at=user.created_at,
     )
 
@@ -112,6 +114,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         email=new_user.email,
         nickname=new_user.nickname,
         is_premium=new_user.is_premium,
+        points=new_user.points,
         created_at=new_user.created_at,
     )
 

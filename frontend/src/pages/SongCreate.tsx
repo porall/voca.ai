@@ -6,16 +6,16 @@ import { listVoices, type Voice } from '../api/voices';
 import { createProject, generateMusic } from '../api/projects';
 import './SongCreate.css';
 
-// Preset styles - artist presets fill description
+// Preset styles - music style presets fill description (avoid real artist names)
 const ARTIST_PRESETS = [
-  { id: 'jjlin', name: '林俊杰', tags: 'pop, r&b, ballad', desc: '一首R&B节奏的抒情歌曲，温暖深情的声线，转音运用自如，表达都市爱情故事的甜蜜与忧伤，JJ式细腻情感表达' },
-  { id: 'jaychou', name: '周杰伦', tags: 'pop, hip-hop, chinese-rock', desc: '中国风嘻哈流行，周杰伦式饶舌与抒情结合，方文山词风意境，周氏经典钢琴前奏，副歌旋律性强' },
-  { id: 'jolin', name: '蔡依林', tags: 'pop, electronic, dance', desc: 'EDM舞曲风格，强劲电子节拍，节奏感强烈，舞曲元素丰富，适合舞池/健身房场景' },
-  { id: 'eason', name: '陈奕迅', tags: 'pop, ballad, cantonese', desc: '深情粤语抒情歌，Eason式沙哑声线，感情层次丰富，表达孤独、深情或释然，叙事感强' },
-  { id: 'a_mei', name: '张惠妹', tags: 'pop, rock, ballad', desc: '张力十足的抒情摇滚，副歌爆发力强，表达浓烈情感，A-Mei式深情呐喊与柔情并存' },
-  { id: 'joker_xue', name: '薛之谦', tags: 'pop, ballad', desc: '薛氏情歌风格，都市情感叙事，字字戳心的歌词旋律，微醺般的诗意抒情，治愈系都市情歌' },
-  { id: 'taylor', name: 'Taylor Swift', tags: 'pop, country-pop', desc: 'Taylor Swift式流行乡村，打动人心的歌词叙事，旋律朗朗上口，流行度极高的现代流行抒情' },
-  { id: 'ed', name: 'Ed Sheeran', tags: 'pop, acoustic, folk', desc: 'Acoustic民谣风格，吉他弹唱，Ed Sheeran式简单却深刻的情感表达，清新温柔的旋律' },
+  { id: 'pop_ballad', name: '流行抒情', tags: 'pop, ballad', desc: '温暖深情的流行抒情歌曲，旋律优美，副歌记忆点强，适合表达都市爱情故事的甜蜜与忧伤' },
+  { id: 'chinese_pop', name: '华语流行', tags: 'pop, chinese', desc: '华语流行风格，中文歌词，现代编曲，情感层次丰富，适合中文演唱' },
+  { id: 'electronic', name: '电子舞曲', tags: 'pop, electronic, dance', desc: 'EDM电子舞曲风格，强劲电子节拍，节奏感强烈，舞曲元素丰富，适合舞池/健身房场景' },
+  { id: 'cantonese', name: '粤语流行', tags: 'pop, cantonese', desc: '深情粤语歌曲，声线温暖富有情感，感情层次丰富，表达孤独、深情或释然，叙事感强' },
+  { id: 'rock', name: '抒情摇滚', tags: 'pop, rock, ballad', desc: '抒情摇滚风格，张力十足，副歌爆发力强，表达浓烈情感，深情与力量并存' },
+  { id: 'urban_ballad', name: '都市情歌', tags: 'pop, ballad', desc: '都市情歌风格，情感叙事，字字戳心的歌词旋律，微醺般的诗意抒情，治愈系' },
+  { id: 'country_pop', name: '乡村流行', tags: 'pop, country', desc: '乡村流行风格，打动人心的歌词叙事，旋律朗朗上口，清新温柔的现代流行抒情' },
+  { id: 'acoustic', name: 'Acoustic民谣', tags: 'pop, acoustic, folk', desc: 'Acoustic民谣风格，吉他弹唱，简单却深刻的情感表达，清新温柔的旋律' },
 ];
 
 // Genre presets add to tags (can combine with artist)
@@ -364,7 +364,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             {submitting ? '🎵 生成中...' : '🎵 生成歌曲'}
           </button>
 
-          <p className="text-center text-purple-300 text-sm">每次生成消耗 5-10 积分</p>
+          <p className="text-center text-purple-300 text-sm">每次生成消耗 200 积分</p>
         </form>
       </main>
     </div>

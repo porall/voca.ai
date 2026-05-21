@@ -119,7 +119,7 @@ function Landing() {
         )}
         
         <p className="mt-4 text-purple-300 text-sm">
-          No credit card required • 3 free songs/day
+          300 points free for new users • 200 points per song
         </p>
       </main>
 

@@ -46,6 +46,7 @@ class User(Base):
     nickname = Column(String(100))
     avatar_url = Column(Text)
     is_premium = Column(Boolean, default=False)
+    points = Column(Integer, default=300)  # 用户积分，新用户默认300
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

@@ -6,6 +6,7 @@ export interface User {
   email: string;
   nickname: string | null;
   is_premium: boolean;
+  points: number;
   created_at: string;
 }
 

@@ -3,9 +3,11 @@ from datetime import datetime
 from typing import List, Optional, Union
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, model_serializer
+from sqlalchemy.orm import Session
 
-from app.models.db import Project, get_db
+from app.models.db import Project, User, get_db
 from app.services.project import project_service
+from app.services.user import get_user_by_id
 from app.api.auth import get_current_user, UserResponse
 
 router = APIRouter(prefix="", tags=["projects"])
@@ -181,8 +183,8 @@ async def delete_project(
 @router.post("/{project_id}/generate", response_model=GenerateResponse)
 async def generate_song(
     project_id: str,
-    db=Depends(get_db),
-    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+    current_user: UserResponse = Depends(get_current_user),
 ):
     """Generate music for a project."""
     project = project_service.get(db=db, project_id=project_id)
@@ -192,10 +194,26 @@ async def generate_song(
     if project.status == "processing":
         raise HTTPException(status_code=400, detail="Already generating")
     
+    # 获取真实用户对象用于修改积分
+    user = get_user_by_id(db, current_user.id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # 检查积分
+    if user.points < 200:
+        raise HTTPException(status_code=402, detail="积分不足，请充值")
+    
+    # 扣除积分
+    user.points -= 200
+    db.commit()
+    
     try:
         result = await project_service.generate(project_id=project_id, db=db)
         return result
     except Exception as e:
+        # 生成失败时退还积分
+        user.points += 200
+        db.commit()
         raise HTTPException(status_code=500, detail=str(e))
 
 
