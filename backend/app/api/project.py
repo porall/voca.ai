@@ -45,7 +45,7 @@ class ProjectResponse(BaseModel):
     suno_title: Optional[str] = None
     suno_id: Optional[str] = None
     mv: str = "chirp-fenix"
-    duration: Optional[int] = None
+    duration: Optional[float] = None
     music_url: Optional[str] = None
     cover_url: Optional[str] = None
     vocal_url: Optional[str] = None
@@ -73,7 +73,7 @@ class StatusResponse(BaseModel):
     status: str
     audio_url: Optional[str] = None
     cover_url: Optional[str] = None
-    duration: Optional[int] = None
+    duration: Optional[float] = None
     title: Optional[str] = None
     lyrics: Optional[str] = None
     error_msg: Optional[str] = None
@@ -110,13 +110,34 @@ async def list_projects(
     current_user=Depends(get_current_user),
 ):
     """List user's projects."""
-    projects = project_service.list_by_user(
-        db=db, 
-        user_id=current_user.id, 
-        limit=limit, 
-        offset=offset
-    )
-    return projects
+    try:
+        projects = project_service.list_by_user(
+            db=db, 
+            user_id=current_user.id, 
+            limit=limit, 
+            offset=offset
+        )
+        
+        # 对于每个 processing/pending 状态的项目，尝试更新状态
+        for project in projects:
+            if project.task_id and project.status in ('processing', 'pending'):
+                try:
+                    await project_service.check_status(project_id=project.id, db=db)
+                except Exception:
+                    pass
+        
+        # 重新获取更新后的项目列表
+        projects = project_service.list_by_user(
+            db=db, 
+            user_id=current_user.id, 
+            limit=limit, 
+            offset=offset
+        )
+        return projects
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/{project_id}", response_model=ProjectResponse)
@@ -129,6 +150,16 @@ async def get_project(
     project = project_service.get(db=db, project_id=project_id)
     if not project or project.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Project not found")
+    
+    # 如果有 task_id，先查询 Suno 更新状态
+    if project.task_id and project.status in ('processing', 'pending'):
+        try:
+            await project_service.check_status(project_id=project_id, db=db)
+            # 重新获取更新后的 project
+            project = project_service.get(db=db, project_id=project_id)
+        except Exception:
+            pass  # 忽略错误，返回旧状态
+    
     return project
 
 
@@ -181,6 +212,7 @@ async def check_status(
     
     try:
         result = await project_service.check_status(project_id=project_id, db=db)
+        result["task_id"] = project.task_id or ""
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -154,16 +154,27 @@ export default function TaskStatusPage() {
               >
                  Your browser does not support audio.
               </audio>
-              {project.duration && (
-                <p className="text-purple-200 text-sm mt-2">
-                  ⏱️ 时长: {Math.floor(project.duration / 60)}:{String(project.duration % 60).padStart(2, '0')}
-                </p>
-              )}
-              {project.points_cost > 0 && (
-                <p className="text-purple-200 text-sm">
-                  💰 消耗积分: {project.points_cost}
-                </p>
-              )}
+              <div className="flex items-center justify-between mt-2">
+                <div>
+                  {project.duration && (
+                    <p className="text-purple-200 text-sm">
+                      ⏱️ 时长: {Math.floor(project.duration / 60)}:{String(Math.floor(project.duration % 60)).padStart(2, '0')}
+                    </p>
+                  )}
+                  {project.points_cost > 0 && (
+                    <p className="text-purple-200 text-sm">
+                      💰 消耗积分: {project.points_cost}
+                    </p>
+                  )}
+                </div>
+                <a
+                  href={project.music_url}
+                  download={project.name + '.mp3'}
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2"
+                >
+                  ⬇️ 下载
+                </a>
+              </div>
             </div>
           )}
 

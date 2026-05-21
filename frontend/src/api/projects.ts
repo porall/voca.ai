@@ -1,7 +1,8 @@
 // Projects API client
 import { getToken } from './auth';
 
-const API_BASE = '/api/projects';
+const API_URL = import.meta.env.VITE_API_URL || '';
+const API_BASE = `${API_URL}/api/projects`;
 
 export interface Project {
   id: string;
@@ -98,16 +99,21 @@ export async function checkStatus(projectId: string): Promise<TaskStatus> {
   return res.json();
 }
 
-// Get all projects
 export async function listProjects(): Promise<Project[]> {
   const token = getToken();
+  if (!token) {
+    throw new Error('未登录');
+  }
+  
   const res = await fetch(API_BASE, {
     headers: {
       'Authorization': `Bearer ${token}`,
     },
   });
+  
   if (!res.ok) {
-    throw new Error('获取项目列表失败');
+    const errText = await res.text();
+    throw new Error(`获取项目列表失败: ${res.status} - ${errText}`);
   }
   return res.json();
 }
